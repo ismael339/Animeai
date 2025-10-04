@@ -1,0 +1,2084 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimeIA - Encuentra tu anime perfecto con inteligencia artificial</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Descubre anime personalizado con IA. Describe lo que buscas y nuestra inteligencia artificial te recomendará el anime perfecto para ti. ¡Encuentra tu próxima serie favorita!">
+    <meta name="keywords" content="anime, buscador anime, IA anime, recomendaciones anime, inteligencia artificial, otaku, manga, series japonesas">
+    <meta name="author" content="AnimeIA">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://animeia.com/">
+    <meta property="og:title" content="AnimeIA - Encuentra tu anime perfecto con IA">
+    <meta property="og:description" content="Descubre anime personalizado con IA. Describe lo que buscas y nuestra inteligencia artificial te recomendará el anime perfecto.">
+    <meta property="og:image" content="https://animeia.com/og-image.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://animeia.com/">
+    <meta property="twitter:title" content="AnimeIA - Encuentra tu anime perfecto con IA">
+    <meta property="twitter:description" content="Descubre anime personalizado con IA. Describe lo que buscas y nuestra inteligencia artificial te recomendará el anime perfecto.">
+    <meta property="twitter:image" content="https://animeia.com/twitter-image.jpg">
+    
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "AnimeIA",
+        "description": "Buscador de anime con inteligencia artificial que recomienda series basándose en descripciones de usuarios",
+        "url": "https://animeia.com",
+        "applicationCategory": "Entertainment",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        }
+    }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --dark: #1a1a2e;
+            --dark-light: #16213e;
+            --text-primary: #ffffff;
+            --text-secondary: #b8c6db;
+            --text-dark: #2d3748;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, #1a1a2e, #16213e, #0f0f23);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(245, 87, 108, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 25%, rgba(79, 172, 254, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 25% 75%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(1deg); }
+            66% { transform: translateY(-10px) rotate(-1deg); }
+        }
+        
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: rgba(26, 26, 46, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .main {
+            padding-top: 100px;
+            min-height: 100vh;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .search-section {
+            max-width: 800px;
+            margin: 0 auto 4rem;
+            padding: 0 2rem;
+        }
+        
+        .search-container {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .search-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.5);
+        }
+        
+        .search-form {
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 1.5rem 1.5rem 1.5rem 4rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--glass-border);
+            border-radius: 15px;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .search-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1.5rem;
+            top: 1.5rem;
+            width: 24px;
+            height: 24px;
+            color: var(--text-secondary);
+        }
+        
+        .search-btn {
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1rem 2rem;
+            background: var(--primary);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .search-btn:active {
+            transform: translateY(0);
+        }
+        
+        .search-btn.loading .btn-text {
+            opacity: 0;
+        }
+        
+        .search-btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .examples {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .examples h3 {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .example-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+        
+        .example-tag {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .example-tag:hover {
+            background: rgba(102, 126, 234, 0.2);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+        
+        .results {
+            max-width: 1000px;
+            margin: 4rem auto 0;
+            padding: 0 2rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.5s ease;
+            display: none;
+        }
+        
+        .results.show {
+            opacity: 1;
+            transform: translateY(0);
+            display: block;
+        }
+        
+        .results h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-family: 'Poppins', sans-serif;
+            background: var(--secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .match-info {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        .anime-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+        }
+        
+        .anime-card:nth-child(1) { animation-delay: 0.1s; }
+        .anime-card:nth-child(2) { animation-delay: 0.2s; }
+        .anime-card:nth-child(3) { animation-delay: 0.3s; }
+        .anime-card:nth-child(4) { animation-delay: 0.4s; }
+        .anime-card:nth-child(5) { animation-delay: 0.5s; }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .anime-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .anime-card:hover::before {
+            transform: translateX(0);
+        }
+        
+        .anime-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(31, 38, 135, 0.4);
+        }
+        
+        .match-score {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(102, 126, 234, 0.9);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .anime-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .anime-genres {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .genre-tag {
+            padding: 0.2rem 0.6rem;
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .anime-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .anime-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .rating-star {
+            color: #fbbf24;
+        }
+        
+        .features {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            background: var(--accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            background: var(--primary);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .feature-card h3 {
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .footer {
+            background: var(--dark-light);
+            padding: 3rem 2rem 1rem;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--text-primary);
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero {
+                padding: 2rem 1rem;
+            }
+            
+            .search-section {
+                padding: 0 1rem;
+            }
+            
+            .search-container {
+                padding: 1.5rem;
+            }
+            
+            .search-input {
+                padding: 1rem 1rem 1rem 3rem;
+                font-size: 1rem;
+            }
+            
+            .search-icon {
+                left: 1rem;
+                top: 1rem;
+            }
+            
+            .anime-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features {
+                padding: 4rem 1rem;
+            }
+            
+            .features h2 {
+                font-size: 2rem;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">AnimeIA</div>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#buscar">Buscar</a></li>
+                <li><a href="#como-funciona">Cómo Funciona</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main class="main">
+        <section class="hero" id="inicio">
+            <h1>Encuentra tu anime perfecto con IA</h1>
+            <p>Describe lo que buscas y nuestra inteligencia artificial te recomendará el anime ideal para ti. ¡Descubre tu próxima serie favorita en segundos!</p>
+        </section>
+        
+        <section class="search-section" id="buscar">
+            <div class="search-container">
+                <form class="search-form" id="searchForm">
+                    <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <textarea 
+                        id="searchInput"
+                        class="search-input" 
+                        placeholder="Describe el anime que buscas... Por ejemplo: 'Quiero un anime de acción con protagonista fuerte, batallas épicas y algo de romance. Que no sea muy largo y tenga buena animación.'"
+                        required
+                        maxlength="500"
+                    ></textarea>
+                    <button type="submit" class="search-btn" id="searchBtn">
+                        <span class="btn-text">Buscar con IA</span>
+                    </button>
+                </form>
+                
+                <div class="examples">
+                    <h3>Ejemplos populares</h3>
+                    <div class="example-tags">
+                        <span class="example-tag" onclick="fillExample('Anime de fantasía con magia y aventuras épicas')">Fantasía mágica</span>
+                        <span class="example-tag" onclick="fillExample('Romance escolar con comedia y personajes carismáticos')">Romance escolar</span>
+                        <span class="example-tag" onclick="fillExample('Acción con poderes sobrenaturales y peleas intensas')">Poderes sobrenaturales</span>
+                        <span class="example-tag" onclick="fillExample('Thriller psicológico oscuro con giros inesperados')">Thriller psicológico</span>
+                        <span class="example-tag" onclick="fillExample('Deportes con superación personal y trabajo en equipo')">Deportes</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="results" id="results">
+            <h2>Recomendaciones para ti</h2>
+            <p class="match-info" id="matchInfo"></p>
+            <div class="anime-grid" id="animeGrid"></div>
+        </section>
+        
+        <section class="features" id="como-funciona">
+            <h2>¿Cómo funciona?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>IA Avanzada</h3>
+                    <p>Nuestra inteligencia artificial analiza tu descripción y encuentra patrones en miles de anime para darte las mejores recomendaciones.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Precisión Alta</h3>
+                    <p>Algoritmos especializados que entienden géneros, tramas, estilos de animación y preferencias personales para resultados exactos.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Resultados Instantáneos</h3>
+                    <p>Obtén recomendaciones personalizadas en segundos. No más horas navegando listas interminables de anime.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="footer" id="contacto">
+        <div class="footer-content">
+            <p>© 2024 AnimeIA. Encuentra tu anime perfecto con inteligencia artificial.</p>
+            <div class="footer-links">
+                <a href="#privacidad">Política de Privacidad</a>
+                <a href="#terminos">Términos de Uso</a>
+                <a href="#api">API</a>
+                <a href="#contacto">Contacto</a>
+                <a href="#blog">Blog</a>
+            </div>
+            <p>Hecho con ❤️ para la comunidad otaku</p>
+        </div>
+    </footer>
+    
+ <script>
+const animeDatabase = [
+  {
+    title: "Attack on Titan",
+    genres: ["Acción", "Drama", "Fantasía", "Shonen"],
+    description: "La humanidad lucha por sobrevivir contra gigantes devoradores de hombres conocidos como titanes.",
+    rating: 9.0,
+    year: 2013,
+    episodes: 87,
+    keywords: ["acción", "militar", "drama", "supervivencia", "titans", "oscuridad", "misterio", "guerra", "épico", "violencia", "post-apocalíptico"]
+  },
+  {
+    title: "Your Name",
+    genres: ["Romance", "Sobrenatural", "Drama"],
+    description: "Dos jóvenes conectan de manera mágica y buscan encontrarse a través del tiempo y el espacio.",
+    rating: 8.9,
+    year: 2016,
+    episodes: 1,
+    keywords: ["romance", "sobrenatural", "drama", "emoción", "fantasía", "película", "amor", "tiempo", "destino", "juventud", "intercambio de cuerpos"]
+  },
+  {
+    title: "One Piece",
+    genres: ["Aventura", "Comedia", "Acción", "Shonen"],
+    description: "Monkey D. Luffy y su tripulación buscan el tesoro legendario conocido como One Piece.",
+    rating: 8.7,
+    year: 1999,
+    episodes: 1050,
+    keywords: ["aventura", "piratas", "comedia", "acción", "amigos", "shonen", "largo", "océano", "tesoro", "poderes", "nakama", "libertad"]
+  },
+  {
+    title: "Demon Slayer",
+    genres: ["Acción", "Aventura", "Fantasía"],
+    description: "Tanjiro lucha contra demonios mientras busca una cura para su hermana transformada.",
+    rating: 8.8,
+    year: 2019,
+    episodes: 44,
+    keywords: ["acción", "fantasía", "hermanos", "demonios", "aventura", "espadas", "familia", "respiración", "animación", "belleza visual", "venganza"]
+  },
+  {
+    title: "Death Note",
+    genres: ["Thriller", "Sobrenatural", "Psicológico"],
+    description: "Un joven encuentra un cuaderno que puede matar personas con solo escribir su nombre.",
+    rating: 9.0,
+    year: 2006,
+    episodes: 37,
+    keywords: ["thriller", "psicológico", "sobrenatural", "misterio", "estrategia", "gato y ratón", "detective", "inteligencia", "moralidad", "justicia", "oscuro"]
+  },
+  {
+    title: "Naruto",
+    genres: ["Acción", "Aventura", "Shonen"],
+    description: "Naruto Uzumaki, un joven ninja, busca reconocimiento y convertirse en Hokage.",
+    rating: 8.3,
+    year: 2002,
+    episodes: 220,
+    keywords: ["acción", "ninja", "aventura", "shonen", "amistad", "superación", "aldea", "jutsu", "determinación", "sueños", "perseverancia"]
+  },
+  {
+    title: "Naruto Shippuden",
+    genres: ["Acción", "Aventura", "Shonen"],
+    description: "Continuación de Naruto, con batallas más intensas y un enemigo más peligroso.",
+    rating: 8.5,
+    year: 2007,
+    episodes: 500,
+    keywords: ["acción", "ninja", "shonen", "amistad", "venganza", "aventura", "guerra", "largo", "poderes", "madurez", "sacrificio"]
+  },
+  {
+    title: "My Hero Academia",
+    genres: ["Acción", "Shonen", "Superhéroes"],
+    description: "En un mundo de superhéroes, Izuku Midoriya busca convertirse en el más grande héroe.",
+    rating: 8.5,
+    year: 2016,
+    episodes: 88,
+    keywords: ["superhéroes", "acción", "shonen", "escuela", "poderes", "aventura", "quirks", "entrenamiento", "héroe", "villanos", "amistad"]
+  },
+  {
+    title: "Jujutsu Kaisen",
+    genres: ["Acción", "Sobrenatural", "Shonen"],
+    description: "Yuji Itadori se une a la escuela de hechicería para luchar contra maldiciones.",
+    rating: 8.7,
+    year: 2020,
+    episodes: 24,
+    keywords: ["acción", "sobrenatural", "shonen", "maldiciones", "aventura", "magia", "exorcismo", "poderes", "oscuro", "peleas", "hechicería"]
+  },
+  {
+    title: "Tokyo Revengers",
+    genres: ["Acción", "Drama", "Viaje en el tiempo"],
+    description: "Takemichi viaja al pasado para salvar a su exnovia de un trágico destino.",
+    rating: 8.2,
+    year: 2021,
+    episodes: 24,
+    keywords: ["acción", "viaje en el tiempo", "drama", "pandillas", "amistad", "redención", "romance", "delincuencia", "valentía", "segunda oportunidad"]
+  },
+  {
+    title: "One Punch Man",
+    genres: ["Comedia", "Acción", "Shonen"],
+    description: "Saitama puede derrotar a cualquier enemigo de un solo golpe, pero busca un verdadero desafío.",
+    rating: 8.6,
+    year: 2015,
+    episodes: 24,
+    keywords: ["comedia", "acción", "shonen", "héroe", "superpoderes", "parodia", "op", "invencible", "aburrimiento", "sátira"]
+  },
+  {
+    title: "Dragon Ball Z",
+    genres: ["Acción", "Aventura", "Shonen"],
+    description: "Goku y sus amigos defienden la Tierra de enemigos poderosos y buscan las Dragon Balls.",
+    rating: 8.7,
+    year: 1989,
+    episodes: 291,
+    keywords: ["acción", "aventura", "shonen", "dragon ball", "peleas", "amigos", "ki", "transformaciones", "clásico", "aliens", "sayajin"]
+  },
+  {
+    title: "Dragon Ball Super",
+    genres: ["Acción", "Aventura", "Shonen"],
+    description: "Goku enfrenta amenazas aún más poderosas mientras descubre nuevos universos y enemigos.",
+    rating: 8.3,
+    year: 2015,
+    episodes: 131,
+    keywords: ["acción", "aventura", "shonen", "dragon ball", "universo", "peleas", "dioses", "torneo", "poder", "multiverso"]
+  },
+  {
+    title: "Fullmetal Alchemist: Brotherhood",
+    genres: ["Acción", "Aventura", "Fantasía", "Drama"],
+    description: "Dos hermanos alquimistas buscan la piedra filosofal para recuperar lo que perdieron.",
+    rating: 9.2,
+    year: 2009,
+    episodes: 64,
+    keywords: ["acción", "aventura", "fantasía", "hermandad", "drama", "alquimia", "ciencia", "militar", "filosófico", "sacrificio", "redención"]
+  },
+  {
+    title: "Steins;Gate",
+    genres: ["Ciencia Ficción", "Thriller", "Drama"],
+    description: "Un grupo de amigos descubre cómo enviar mensajes al pasado, alterando el tiempo.",
+    rating: 9.1,
+    year: 2011,
+    episodes: 24,
+    keywords: ["ciencia ficción", "thriller", "drama", "viaje en el tiempo", "misterio", "conspiración", "paradoja", "científico", "emocional", "complejo"]
+  },
+  {
+    title: "Black Clover",
+    genres: ["Acción", "Aventura", "Shonen", "Fantasía"],
+    description: "Asta, un joven sin magia, sueña con convertirse en el Rey Mago.",
+    rating: 7.8,
+    year: 2017,
+    episodes: 170,
+    keywords: ["acción", "shonen", "magia", "aventura", "fantasía", "determinación", "largo", "rivalidad", "amistad", "superación"]
+  },
+  {
+    title: "Bleach",
+    genres: ["Acción", "Aventura", "Shonen", "Sobrenatural"],
+    description: "Ichigo Kurosaki obtiene poderes de shinigami y protege a los vivos y muertos de espíritus malignos.",
+    rating: 8.1,
+    year: 2004,
+    episodes: 366,
+    keywords: ["acción", "shonen", "sobrenatural", "espíritus", "aventura", "largo", "shinigami", "espadas", "hollows", "peleas"]
+  },
+  {
+    title: "Hunter x Hunter",
+    genres: ["Acción", "Aventura", "Shonen", "Fantasía"],
+    description: "Gon Freecss busca convertirse en cazador para encontrar a su padre desaparecido.",
+    rating: 9.0,
+    year: 2011,
+    episodes: 148,
+    keywords: ["acción", "aventura", "shonen", "fantasía", "amistad", "caza", "nen", "estrategia", "oscuro", "complejo", "desarrollo"]
+  },
+  {
+    title: "Sword Art Online",
+    genres: ["Acción", "Aventura", "Romance", "Ciencia Ficción"],
+    description: "Jugadores quedan atrapados en un videojuego de realidad virtual y deben sobrevivir.",
+    rating: 7.6,
+    year: 2012,
+    episodes: 96,
+    keywords: ["acción", "romance", "aventura", "realidad virtual", "juegos", "shonen", "mmorpg", "atrapados", "virtual", "rpg"]
+  },
+  {
+    title: "Re:Zero",
+    genres: ["Fantasía", "Drama", "Suspenso", "Romance"],
+    description: "Subaru Natsuki revive una y otra vez para proteger a Emilia y cambiar su destino.",
+    rating: 8.3,
+    year: 2016,
+    episodes: 50,
+    keywords: ["fantasía", "drama", "suspenso", "romance", "viaje en el tiempo", "loop", "muerte", "sufrimiento", "isekai", "psicológico"]
+  },
+  {
+    title: "Code Geass",
+    genres: ["Acción", "Ciencia Ficción", "Mecha", "Drama"],
+    description: "Lelouch obtiene un poder especial para rebelarse contra un imperio que controla Japón.",
+    rating: 8.7,
+    year: 2006,
+    episodes: 50,
+    keywords: ["acción", "drama", "mecha", "ciencia ficción", "estrategia", "rebelión", "geass", "anti-héroe", "inteligencia", "político", "robots"]
+  },
+  {
+    title: "One Punch Man 2",
+    genres: ["Comedia", "Acción", "Shonen"],
+    description: "Continuación de la historia de Saitama buscando un verdadero desafío.",
+    rating: 7.9,
+    year: 2019,
+    episodes: 12,
+    keywords: ["comedia", "acción", "shonen", "héroe", "superpoderes", "parodia", "op", "monsters", "asociación"]
+  },
+  {
+    title: "Haikyuu!!",
+    genres: ["Deportes", "Comedia", "Drama"],
+    description: "Hinata y su equipo buscan ser campeones en el voleibol mientras enfrentan desafíos personales.",
+    rating: 8.8,
+    year: 2014,
+    episodes: 85,
+    keywords: ["deportes", "voleibol", "amistad", "comedia", "superación", "equipo", "competencia", "entrenamiento", "juventud", "motivación"]
+  },
+  {
+    title: "Vivy: Fluorite Eye's Song",
+    genres: ["Ciencia Ficción", "Acción", "Musical"],
+    description: "Vivy, una IA cantante, lucha para cambiar el futuro y evitar una guerra con las IA.",
+    rating: 8.5,
+    year: 2021,
+    episodes: 13,
+    keywords: ["ciencia ficción", "acción", "IA", "musical", "futuro", "aventura", "robots", "cantante", "viaje en el tiempo", "emocional"]
+  },
+  {
+    title: "Akame ga Kill!",
+    genres: ["Acción", "Fantasía", "Drama"],
+    description: "Un grupo de asesinos lucha contra la corrupción del imperio.",
+    rating: 7.5,
+    year: 2014,
+    episodes: 24,
+    keywords: ["acción", "fantasía", "drama", "asesinos", "aventura", "oscuro", "violencia", "muerte", "imperio", "corrupción", "rebelión"]
+  },
+  {
+    title: "Fate/Stay Night: Unlimited Blade Works",
+    genres: ["Acción", "Fantasía", "Romance"],
+    description: "Magos y héroes legendarios luchan por obtener el Santo Grial.",
+    rating: 8.1,
+    year: 2014,
+    episodes: 26,
+    keywords: ["acción", "fantasía", "romance", "magia", "aventura", "héroes", "grial", "servants", "guerra", "destino"]
+  },
+  {
+    title: "Made in Abyss",
+    genres: ["Aventura", "Fantasía", "Drama"],
+    description: "Riko desciende al abismo en busca de su madre y secretos ocultos.",
+    rating: 8.7,
+    year: 2017,
+    episodes: 13,
+    keywords: ["aventura", "fantasía", "drama", "misterio", "exploración", "oscuro", "abismo", "criaturas", "profundo", "emocional"]
+  },
+  {
+    title: "Parasyte: The Maxim",
+    genres: ["Acción", "Horror", "Ciencia Ficción"],
+    description: "Un joven lucha contra parásitos que controlan cuerpos humanos.",
+    rating: 8.5,
+    year: 2014,
+    episodes: 24,
+    keywords: ["acción", "horror", "ciencia ficción", "parásitos", "supervivencia", "gore", "alien", "filosófico", "humanidad", "oscuro"]
+  },
+  {
+    title: "Toradora!",
+    genres: ["Romance", "Comedia", "Drama"],
+    description: "Dos estudiantes intentan ayudarse mutuamente con sus intereses amorosos mientras desarrollan un vínculo especial.",
+    rating: 8.2,
+    year: 2008,
+    episodes: 25,
+    keywords: ["romance", "comedia", "drama", "escuela", "amistad", "slice of life", "amor", "tsundere", "juventud", "emocional"]
+  },
+  {
+    title: "Mob Psycho 100",
+    genres: ["Acción", "Comedia", "Sobrenatural"],
+    description: "Un estudiante con poderes psíquicos busca llevar una vida normal.",
+    rating: 8.5,
+    year: 2016,
+    episodes: 25,
+    keywords: ["acción", "comedia", "sobrenatural", "poderes", "psíquico", "juventud", "auto-mejora", "espíritus", "animación", "único"]
+  },
+  {
+    title: "Vinland Saga",
+    genres: ["Acción", "Aventura", "Drama", "Histórico"],
+    description: "Un joven vikingo busca venganza por la muerte de su padre.",
+    rating: 8.8,
+    year: 2019,
+    episodes: 24,
+    keywords: ["acción", "aventura", "drama", "histórico", "vikingos", "guerra", "venganza", "violencia", "medieval", "épico", "maduro"]
+  },
+  {
+    title: "Cowboy Bebop",
+    genres: ["Acción", "Ciencia Ficción", "Drama"],
+    description: "Cazarrecompensas viajan por el espacio enfrentando su pasado.",
+    rating: 8.9,
+    year: 1998,
+    episodes: 26,
+    keywords: ["acción", "ciencia ficción", "drama", "espacio", "jazz", "episódico", "maduro", "nostálgico", "clásico", "estilo"]
+  },
+  {
+    title: "Neon Genesis Evangelion",
+    genres: ["Mecha", "Psicológico", "Drama", "Ciencia Ficción"],
+    description: "Adolescentes pilotan robots gigantes para defender la Tierra de ángeles misteriosos.",
+    rating: 8.5,
+    year: 1995,
+    episodes: 26,
+    keywords: ["mecha", "psicológico", "drama", "ciencia ficción", "filosófico", "depresión", "robots", "ángeles", "complejo", "clásico"]
+  },
+  {
+    title: "Tokyo Ghoul",
+    genres: ["Acción", "Horror", "Sobrenatural"],
+    description: "Un estudiante se convierte en semi-ghoul tras un encuentro fatal.",
+    rating: 7.8,
+    year: 2014,
+    episodes: 48,
+    keywords: ["acción", "horror", "sobrenatural", "ghouls", "oscuro", "gore", "identidad", "supervivencia", "tragedia", "monstruos"]
+  },
+  {
+    title: "Assassination Classroom",
+    genres: ["Comedia", "Acción", "Shonen"],
+    description: "Estudiantes intentan asesinar a su profesor alienígena antes de que destruya la Tierra.",
+    rating: 8.1,
+    year: 2015,
+    episodes: 47,
+    keywords: ["comedia", "acción", "shonen", "escuela", "alien", "profesor", "asesinos", "emocional", "lecciones", "amistad"]
+  },
+  {
+    title: "Overlord",
+    genres: ["Fantasía", "Acción", "Isekai"],
+    description: "Un jugador queda atrapado en un juego como su personaje esqueleto todopoderoso.",
+    rating: 7.9,
+    year: 2015,
+    episodes: 52,
+    keywords: ["fantasía", "acción", "isekai", "juegos", "op", "esqueleto", "magia", "conquista", "poder", "mmorpg"]
+  },
+  {
+    title: "Konosuba",
+    genres: ["Comedia", "Fantasía", "Isekai"],
+    description: "Un chico muere y renace en un mundo de fantasía con diosa inútil.",
+    rating: 8.1,
+    year: 2016,
+    episodes: 20,
+    keywords: ["comedia", "fantasía", "isekai", "parodia", "divertido", "aventura", "magia", "rpg", "ligero", "humor"]
+  },
+  {
+    title: "No Game No Life",
+    genres: ["Fantasía", "Comedia", "Isekai"],
+    description: "Dos hermanos gamers son transportados a un mundo donde todo se decide con juegos.",
+    rating: 8.2,
+    year: 2014,
+    episodes: 12,
+    keywords: ["fantasía", "comedia", "isekai", "juegos", "estrategia", "colores", "hermanos", "inteligencia", "gaming", "apuestas"]
+  },
+  {
+    title: "The Promised Neverland",
+    genres: ["Misterio", "Thriller", "Drama"],
+    description: "Niños en un orfanato descubren un oscuro secreto y planean su escape.",
+    rating: 8.5,
+    year: 2019,
+    episodes: 23,
+    keywords: ["misterio", "thriller", "drama", "suspenso", "horror", "escape", "niños", "inteligencia", "oscuro", "conspiración"]
+  },
+  {
+    title: "Dr. Stone",
+    genres: ["Ciencia Ficción", "Aventura", "Shonen"],
+    description: "La humanidad es petrificada y un genio científico busca reconstruir la civilización.",
+    rating: 8.2,
+    year: 2019,
+    episodes: 35,
+    keywords: ["ciencia ficción", "aventura", "shonen", "ciencia", "supervivencia", "reconstrucción", "post-apocalíptico", "educativo", "ingenio"]
+  },
+  {
+    title: "The Rising of the Shield Hero",
+    genres: ["Fantasía", "Acción", "Isekai"],
+    description: "Un joven es invocado como el Héroe del Escudo y traicionado desde el inicio.",
+    rating: 8.0,
+    year: 2019,
+    episodes: 38,
+    keywords: ["fantasía", "acción", "isekai", "escudo", "traición", "venganza", "redención", "rpg", "aventura", "esclava"]
+  },
+  {
+    title: "Fairy Tail",
+    genres: ["Acción", "Aventura", "Fantasía", "Shonen"],
+    description: "Magos de un gremio enfrentan misiones peligrosas y enemigos poderosos.",
+    rating: 7.9,
+    year: 2009,
+    episodes: 328,
+    keywords: ["acción", "aventura", "fantasía", "shonen", "magia", "gremio", "amistad", "largo", "poderes", "batalla"]
+  },
+  {
+    title: "Fire Force",
+    genres: ["Acción", "Sobrenatural", "Shonen"],
+    description: "Bomberos con poderes luchan contra humanos que se convierten en llamas.",
+    rating: 7.7,
+    year: 2019,
+    episodes: 48,
+    keywords: ["acción", "sobrenatural", "shonen", "fuego", "bomberos", "poderes", "religión", "misterio", "animación"]
+  },
+  {
+    title: "Dororo",
+    genres: ["Acción", "Aventura", "Drama", "Histórico"],
+    description: "Un joven recupera sus partes del cuerpo robadas por demonios.",
+    rating: 8.3,
+    year: 2019,
+    episodes: 24,
+    keywords: ["acción", "aventura", "drama", "histórico", "demonios", "samurai", "feudal", "oscuro", "venganza", "redención"]
+  },
+  {
+    title: "Kaguya-sama: Love is War",
+    genres: ["Romance", "Comedia", "Psicológico"],
+    description: "Dos genios del consejo estudiantil intentan hacer que el otro confiese su amor primero.",
+    rating: 8.4,
+    year: 2019,
+    episodes: 37,
+    keywords: ["romance", "comedia", "psicológico", "escuela", "estrategia", "guerra", "inteligencia", "amor", "tsundere", "divertido"]
+  },
+  {
+    title: "Violet Evergarden",
+    genres: ["Drama", "Fantasía", "Slice of Life"],
+    description: "Una ex soldado busca comprender el significado del amor trabajando como escritora de cartas.",
+    rating: 8.7,
+    year: 2018,
+    episodes: 13,
+    keywords: ["drama", "fantasía", "slice of life", "emocional", "hermoso", "cartas", "guerra", "crecimiento", "kyoto animation", "lágrimas"]
+  },
+  {
+    title: "That Time I Got Reincarnated as a Slime",
+    genres: ["Fantasía", "Comedia", "Isekai"],
+    description: "Un hombre es reencarnado como un slime en un mundo de fantasía y construye una nación.",
+    rating: 8.1,
+    year: 2018,
+    episodes: 48,
+    keywords: ["fantasía", "comedia", "isekai", "slime", "op", "construcción", "monstruos", "magia", "reino", "ligero"]
+  },
+  {
+    title: "Erased",
+    genres: ["Misterio", "Thriller", "Sobrenatural"],
+    description: "Un hombre viaja al pasado para prevenir secuestros de su infancia.",
+    rating: 8.5,
+    year: 2016,
+    episodes: 12,
+    keywords: ["misterio", "thriller", "sobrenatural", "viaje en el tiempo", "suspenso", "infantil", "asesinato", "detective", "emocional"]
+  },
+  {
+    title: "Gurren Lagann",
+    genres: ["Mecha", "Acción", "Ciencia Ficción"],
+    description: "Humanos subterráneos luchan para reclamar la superficie con mechas.",
+    rating: 8.3,
+    year: 2007,
+    episodes: 27,
+    keywords: ["mecha", "acción", "ciencia ficción", "épico", "robots", "espiral", "determinación", "over the top", "inspirador"]
+  },
+  {
+    title: "March Comes in Like a Lion",
+    genres: ["Drama", "Slice of Life"],
+    description: "Un joven prodigio del shogi lucha con la depresión mientras encuentra una nueva familia.",
+    rating: 8.4,
+    year: 2016,
+    episodes: 44,
+    keywords: ["drama", "slice of life", "shogi", "depresión", "emocional", "familia", "crecimiento", "maduro", "profundo"]
+  },
+  {
+    title: "Mushoku Tensei",
+    genres: ["Fantasía", "Drama", "Isekai"],
+    description: "Un hombre fracasado renace en un mundo de fantasía con sus recuerdos intactos.",
+    rating: 8.4,
+    year: 2021,
+    episodes: 23,
+    keywords: ["fantasía", "drama", "isekai", "magia", "reencarnación", "redención", "crecimiento", "aventura", "maduro", "desarrollo"]
+  },
+  {
+    title: "Code Geass R2",
+    genres: ["Acción", "Mecha", "Drama"],
+    description: "Lelouch continúa su rebelión contra Britannia con nuevos aliados y enemigos.",
+    rating: 8.9,
+    year: 2008,
+    episodes: 25,
+    keywords: ["acción", "mecha", "drama", "estrategia", "geass", "rebelión", "final", "épico", "político", "robots"]
+  },
+  {
+    title: "Spy x Family",
+    genres: ["Comedia", "Acción", "Slice of Life"],
+    description: "Un espía, una asesina y una telépata forman una familia falsa.",
+    rating: 8.6,
+    year: 2022,
+    episodes: 25,
+    keywords: ["comedia", "acción", "slice of life", "familia", "espía", "wholesome", "niña", "guerra fría", "divertido", "adorable"]
+  },
+  {
+    title: "Chainsaw Man",
+    genres: ["Acción", "Horror", "Sobrenatural"],
+    description: "Un joven se fusiona con un demonio motosierra y caza demonios.",
+    rating: 8.6,
+    year: 2022,
+    episodes: 12,
+    keywords: ["acción", "horror", "sobrenatural", "gore", "demonios", "oscuro", "motosierra", "violencia", "mappa", "único"]
+  },
+  {
+    title: "Blue Lock",
+    genres: ["Deportes", "Shonen"],
+    description: "300 delanteros compiten en un programa extremo para crear al mejor delantero de Japón.",
+    rating: 8.3,
+    year: 2022,
+    episodes: 24,
+    keywords: ["deportes", "shonen", "fútbol", "competencia", "ego", "entrenamiento", "intenso", "estrategia", "egoísmo"]
+  },
+  {
+    title: "Bocchi the Rock!",
+    genres: ["Comedia", "Música", "Slice of Life"],
+    description: "Una chica con ansiedad social busca unirse a una banda de rock.",
+    rating: 8.8,
+    year: 2022,
+    episodes: 12,
+    keywords: ["comedia", "música", "slice of life", "rock", "ansiedad", "banda", "guitarra", "wholesome", "relatable", "cgdct"]
+  },
+  {
+    title: "Frieren: Beyond Journey's End",
+    genres: ["Fantasía", "Aventura", "Drama"],
+    description: "Una elfa inmortal reflexiona sobre la vida después de derrotar al rey demonio.",
+    rating: 9.0,
+    year: 2023,
+    episodes: 28,
+    keywords: ["fantasía", "aventura", "drama", "elfa", "inmortalidad", "post-aventura", "filosófico", "emocional", "tiempo", "magia"]
+  },
+  {
+    title: "Solo Leveling",
+    genres: ["Acción", "Fantasía"],
+    description: "El cazador más débil obtiene el poder de subir de nivel sin límites.",
+    rating: 8.5,
+    year: 2024,
+    episodes: 12,
+    keywords: ["acción", "fantasía", "op", "poder", "leveling", "cazadores", "monstruos", "dungeons", "coreano", "manhwa"]
+  },
+  {
+    title: "Classroom of the Elite",
+    genres: ["Psicológico", "Drama", "Escolar"],
+    description: "Estudiantes de élite compiten en una escuela donde todo se decide por puntos.",
+    rating: 7.9,
+    year: 2017,
+    episodes: 37,
+    keywords: ["psicológico", "drama", "escolar", "estrategia", "inteligencia", "manipulación", "competencia", "élite", "social"]
+  },
+  {
+    title: "Bunny Girl Senpai",
+    genres: ["Romance", "Sobrenatural", "Drama"],
+    description: "Un estudiante ayuda a chicas que sufren fenómenos sobrenaturales causados por problemas emocionales.",
+    rating: 8.2,
+    year: 2018,
+    episodes: 13,
+    keywords: ["romance", "sobrenatural", "drama", "psicológico", "síndrome", "emocional", "diálogo", "maduro", "fenómenos"]
+  },
+  {
+title: "Food Wars!",
+    genres: ["Comedia", "Ecchi", "Shonen"],
+    description: "Un joven chef busca superar a su padre mientras estudia en una escuela culinaria de élite.",
+    rating: 8.2,
+    year: 2015,
+    episodes: 86,
+    keywords: ["comedia", "ecchi", "shonen", "cocina", "comida", "competencia", "escuela", "gastronomía", "recetas", "drama culinario"]
+  },
+  {
+    title: "Berserk",
+    genres: ["Acción", "Drama", "Fantasía", "Horror"],
+    description: "Un guerrero solitario busca venganza en un mundo oscuro de fantasía medieval.",
+    rating: 8.7,
+    year: 1997,
+    episodes: 25,
+    keywords: ["acción", "drama", "fantasía", "horror", "oscuro", "medieval", "venganza", "espada", "gore", "maduro", "épico"]
+  },
+  {
+    title: "Trigun",
+    genres: ["Acción", "Aventura", "Ciencia Ficción"],
+    description: "Un pistolero pacifista con un pasado misterioso viaja por un planeta desértico.",
+    rating: 8.2,
+    year: 1998,
+    episodes: 26,
+    keywords: ["acción", "aventura", "ciencia ficción", "western", "desierto", "pistolero", "pacifismo", "clásico", "filosófico"]
+  },
+  {
+    title: "Samurai Champloo",
+    genres: ["Acción", "Aventura", "Comedia", "Histórico"],
+    description: "Dos samuráis y una joven viajan por el Japón feudal en busca de un samurái que huele a girasoles.",
+    rating: 8.5,
+    year: 2004,
+    episodes: 26,
+    keywords: ["acción", "aventura", "comedia", "histórico", "samurai", "hip hop", "episódico", "estilo", "espadas"]
+  },
+  {
+    title: "Great Teacher Onizuka",
+    genres: ["Comedia", "Drama", "Slice of Life"],
+    description: "Un ex pandillero se convierte en maestro para conquistar a una estudiante pero termina cambiando vidas.",
+    rating: 8.6,
+    year: 1999,
+    episodes: 43,
+    keywords: ["comedia", "drama", "slice of life", "escuela", "profesor", "inspirador", "reformador", "clásico", "lecciones"]
+  },
+  {
+    title: "Monogatari Series",
+    genres: ["Romance", "Sobrenatural", "Misterio"],
+    description: "Un estudiante ayuda a chicas que sufren de aberraciones sobrenaturales.",
+    rating: 8.3,
+    year: 2009,
+    episodes: 100,
+    keywords: ["romance", "sobrenatural", "misterio", "diálogo", "artístico", "complejo", "shaft", "aberraciones", "filosófico"]
+  },
+  {
+    title: "Clannad After Story",
+    genres: ["Drama", "Romance", "Slice of Life"],
+    description: "La vida adulta de Tomoya y Nagisa enfrenta dificultades emocionales profundas.",
+    rating: 9.0,
+    year: 2008,
+    episodes: 24,
+    keywords: ["drama", "romance", "slice of life", "emocional", "lágrimas", "familia", "vida", "madurez", "key", "triste"]
+  },
+  {
+    title: "Monster",
+    genres: ["Thriller", "Misterio", "Drama"],
+    description: "Un doctor persigue a un paciente que salvó y se convirtió en un monstruoso asesino en serie.",
+    rating: 8.7,
+    year: 2004,
+    episodes: 74,
+    keywords: ["thriller", "misterio", "drama", "psicológico", "asesino", "moralidad", "maduro", "detective", "oscuro", "largo"]
+  },
+  {
+    title: "Yu Yu Hakusho",
+    genres: ["Acción", "Aventura", "Sobrenatural", "Shonen"],
+    description: "Un delincuente muere y vuelve como detective espiritual.",
+    rating: 8.5,
+    year: 1992,
+    episodes: 112,
+    keywords: ["acción", "aventura", "sobrenatural", "shonen", "espíritus", "peleas", "clásico", "torneo", "demonios"]
+  },
+  {
+    title: "Rurouni Kenshin",
+    genres: ["Acción", "Aventura", "Histórico"],
+    description: "Un asesino arrepentido protege a los inocentes con una espada de filo inverso.",
+    rating: 8.5,
+    year: 1996,
+    episodes: 94,
+    keywords: ["acción", "aventura", "histórico", "samurai", "redención", "meiji", "espada", "pacifismo", "clásico"]
+  },
+  {
+    title: "Gintama",
+    genres: ["Comedia", "Acción", "Shonen"],
+    description: "Un samurái desempleado y sus amigos hacen trabajos raros en un Japón invadido por aliens.",
+    rating: 8.9,
+    year: 2006,
+    episodes: 367,
+    keywords: ["comedia", "acción", "shonen", "parodia", "samurai", "aliens", "largo", "episódico", "divertido", "referencias"]
+  },
+  {
+    title: "Fate/Zero",
+    genres: ["Acción", "Fantasía", "Thriller"],
+    description: "Magos y héroes legendarios luchan en una guerra por el Santo Grial.",
+    rating: 8.4,
+    year: 2011,
+    episodes: 25,
+    keywords: ["acción", "fantasía", "thriller", "magia", "guerra", "servants", "grial", "oscuro", "estrategia", "maduro"]
+  },
+  {
+    title: "Ping Pong the Animation",
+    genres: ["Deportes", "Drama", "Psicológico"],
+    description: "Dos amigos de la infancia toman caminos diferentes en el mundo del ping pong competitivo.",
+    rating: 8.6,
+    year: 2014,
+    episodes: 11,
+    keywords: ["deportes", "drama", "psicológico", "ping pong", "amistad", "competencia", "único", "artístico", "filosófico"]
+  },
+  {
+    title: "Psycho-Pass",
+    genres: ["Ciencia Ficción", "Thriller", "Psicológico"],
+    description: "En un futuro distópico, un sistema juzga la propensión criminal de las personas.",
+    rating: 8.3,
+    year: 2012,
+    episodes: 41,
+    keywords: ["ciencia ficción", "thriller", "psicológico", "distopía", "crimen", "futuro", "filosófico", "detective", "oscuro"]
+  },
+  {
+    title: "Space Dandy",
+    genres: ["Comedia", "Ciencia Ficción", "Aventura"],
+    description: "Un cazador de aliens dandy viaja por el espacio en episodios únicos y locos.",
+    rating: 8.1,
+    year: 2014,
+    episodes: 26,
+    keywords: ["comedia", "ciencia ficción", "aventura", "espacio", "episódico", "surrealista", "aliens", "estilo", "único"]
+  },
+  {
+    title: "Mushi-shi",
+    genres: ["Aventura", "Fantasía", "Slice of Life"],
+    description: "Un viajero investiga criaturas sobrenaturales llamadas Mushi en el Japón rural.",
+    rating: 8.7,
+    year: 2005,
+    episodes: 46,
+    keywords: ["aventura", "fantasía", "slice of life", "episódico", "tranquilo", "filosófico", "naturaleza", "misterio", "contemplativo"]
+  },
+  {
+    title: "Black Lagoon",
+    genres: ["Acción", "Thriller"],
+    description: "Un oficinista japonés se une a una tripulación de piratas modernos.",
+    rating: 8.1,
+    year: 2006,
+    episodes: 24,
+    keywords: ["acción", "thriller", "piratas", "crimen", "violencia", "maduro", "guns", "adulto", "realista"]
+  },
+  {
+    title: "Hellsing Ultimate",
+    genres: ["Acción", "Horror", "Sobrenatural"],
+    description: "Vampiros y cazavampiros luchan en batallas sangrientas.",
+    rating: 8.3,
+    year: 2006,
+    episodes: 10,
+    keywords: ["acción", "horror", "sobrenatural", "vampiros", "gore", "violencia", "oscuro", "ova", "maduro"]
+  },
+  {
+    title: "Spice and Wolf",
+    genres: ["Aventura", "Romance", "Fantasía"],
+    description: "Un mercader viaja con una deidad lobo mientras comercia y se enamora.",
+    rating: 8.2,
+    year: 2008,
+    episodes: 25,
+    keywords: ["aventura", "romance", "fantasía", "comercio", "economía", "lobo", "diálogo", "medieval", "madura"]
+  },
+  {
+    title: "Darker than Black",
+    genres: ["Acción", "Ciencia Ficción", "Misterio"],
+    description: "Contratistas con superpoderes trabajan como asesinos en una ciudad distópica.",
+    rating: 8.1,
+    year: 2007,
+    episodes: 37,
+    keywords: ["acción", "ciencia ficción", "misterio", "poderes", "contractors", "episódico", "oscuro", "spy"]
+  },
+  {
+    title: "Terror in Resonance",
+    genres: ["Thriller", "Misterio", "Drama"],
+    description: "Dos adolescentes terroristas desafían a la policía con acertijos mientras buscan justicia.",
+    rating: 8.1,
+    year: 2014,
+    episodes: 11,
+    keywords: ["thriller", "misterio", "drama", "terrorismo", "psicológico", "acertijos", "música", "filosófico"]
+  },
+  {
+    title: "Shiki",
+    genres: ["Horror", "Misterio", "Sobrenatural"],
+    description: "Un pueblo rural enfrenta una epidemia de vampiros.",
+    rating: 7.8,
+    year: 2010,
+    episodes: 22,
+    keywords: ["horror", "misterio", "sobrenatural", "vampiros", "pueblo", "oscuro", "muerte", "moral", "lento"]
+  },
+  {
+    title: "Another",
+    genres: ["Horror", "Misterio", "Sobrenatural"],
+    description: "Un estudiante nuevo descubre una maldición mortal en su clase.",
+    rating: 7.5,
+    year: 2012,
+    episodes: 12,
+    keywords: ["horror", "misterio", "sobrenatural", "muerte", "maldición", "escuela", "gore", "suspenso"]
+  },
+  {
+    title: "Rainbow",
+    genres: ["Drama", "Histórico"],
+    description: "Jóvenes delincuentes sobreviven en una brutal prisión juvenil de posguerra.",
+    rating: 8.6,
+    year: 2010,
+    episodes: 26,
+    keywords: ["drama", "histórico", "prisión", "supervivencia", "amistad", "maduro", "duro", "posguerra", "realista"]
+  },
+  {
+    title: "Kaiji",
+    genres: ["Thriller", "Psicológico", "Drama"],
+    description: "Un perdedor es forzado a jugar juegos de apuestas mortales para pagar deudas.",
+    rating: 8.3,
+    year: 2007,
+    episodes: 52,
+    keywords: ["thriller", "psicológico", "drama", "apuestas", "juegos", "deuda", "estrategia", "intenso", "suspenso"]
+  },
+  {
+    title: "91 Days",
+    genres: ["Acción", "Drama", "Histórico"],
+    description: "Un hombre busca venganza contra la mafia que mató a su familia durante la prohibición.",
+    rating: 7.8,
+    year: 2016,
+    episodes: 12,
+    keywords: ["acción", "drama", "histórico", "mafia", "venganza", "prohibición", "oscuro", "maduro"]
+  },
+  {
+    title: "Durarara!!",
+    genres: ["Acción", "Misterio", "Sobrenatural"],
+    description: "Historias entrelazadas de personajes únicos en el bullicioso distrito de Ikebukuro.",
+    rating: 8.1,
+    year: 2010,
+    episodes: 60,
+    keywords: ["acción", "misterio", "sobrenatural", "urbano", "pandillas", "múltiples perspectivas", "complejo", "tokyo"]
+  },
+  {
+    title: "Banana Fish",
+    genres: ["Acción", "Drama", "Thriller"],
+    description: "Un líder de pandilla y un fotógrafo japonés investigan una droga misteriosa.",
+    rating: 8.3,
+    year: 2018,
+    episodes: 24,
+    keywords: ["acción", "drama", "thriller", "pandillas", "drogas", "mafia", "new york", "maduro", "emocional"]
+  },
+  {
+    title: "Nodame Cantabile",
+    genres: ["Comedia", "Drama", "Romance", "Música"],
+    description: "Un pianista perfeccionista y una pianista desordenada se ayudan mutuamente en la escuela de música.",
+    rating: 8.3,
+    year: 2007,
+    episodes: 45,
+    keywords: ["comedia", "drama", "romance", "música", "clásica", "piano", "orquesta", "josei", "talento"]
+  },
+  {
+    title: "Chihayafuru",
+    genres: ["Deportes", "Drama", "Romance"],
+    description: "Una chica apasionada compite en karuta, un juego de cartas japonés competitivo.",
+    rating: 8.3,
+    year: 2011,
+    episodes: 74,
+    keywords: ["deportes", "drama", "romance", "karuta", "poesía", "competencia", "josei", "determinación", "amor"]
+  },
+  {
+    title: "Barakamon",
+    genres: ["Comedia", "Slice of Life"],
+    description: "Un calígrafo de ciudad se muda a una isla rural para encontrar inspiración.",
+    rating: 8.3,
+    year: 2014,
+    episodes: 12,
+    keywords: ["comedia", "slice of life", "caligrafía", "rural", "wholesome", "niños", "crecimiento", "tranquilo"]
+  },
+  {
+    title: "Grand Blue",
+    genres: ["Comedia", "Slice of Life"],
+    description: "Un estudiante se une a un club de buceo que resulta ser un club de bebida desenfrenado.",
+    rating: 8.4,
+    year: 2018,
+    episodes: 12,
+    keywords: ["comedia", "slice of life", "universidad", "buceo", "alcohol", "divertido", "seinen", "amistad"]
+  },
+  {
+    title: "Nichijou",
+    genres: ["Comedia", "Slice of Life"],
+    description: "La vida cotidiana absurda y surrealista de estudiantes de secundaria.",
+    rating: 8.5,
+    year: 2011,
+    episodes: 26,
+    keywords: ["comedia", "slice of life", "surrealista", "absurdo", "escuela", "kyoto animation", "random", "wholesome"]
+  },
+  {
+    title: "Asobi Asobase",
+    genres: ["Comedia", "Escolar"],
+    description: "Tres chicas forman un club de juegos y viven situaciones hilarantes.",
+    rating: 8.0,
+    year: 2018,
+    episodes: 12,
+    keywords: ["comedia", "escolar", "chicas", "juegos", "absurdo", "expresiones", "divertido", "sketch"]
+  },
+  {
+    title: "Hinamatsuri",
+    genres: ["Comedia", "Ciencia Ficción", "Slice of Life"],
+    description: "Un yakuza cuida de una niña con telequinesis que cae del cielo.",
+    rating: 8.2,
+    year: 2018,
+    episodes: 12,
+    keywords: ["comedia", "ciencia ficción", "slice of life", "yakuza", "poderes", "padre-hija", "wholesome", "divertido"]
+  },
+  {
+    title: "The Devil is a Part-Timer",
+    genres: ["Comedia", "Fantasía"],
+    description: "El señor demonio escapa a la Tierra moderna y trabaja en un restaurante de comida rápida.",
+    rating: 7.9,
+    year: 2013,
+    episodes: 25,
+    keywords: ["comedia", "fantasía", "isekai inverso", "trabajo", "demonio", "moderno", "divertido", "mcdonalds"]
+  },
+  {
+    title: "Daily Lives of High School Boys",
+    genres: ["Comedia", "Slice of Life"],
+    description: "La vida cotidiana cómica de tres chicos de preparatoria.",
+    rating: 8.2,
+    year: 2012,
+    episodes: 12,
+    keywords: ["comedia", "slice of life", "escuela", "chicos", "sketch", "relatable", "divertido", "amistad"]
+  },
+  {
+    title: "Uzaki-chan Wants to Hang Out!",
+    genres: ["Comedia", "Romance", "Slice of Life"],
+    description: "Una universitaria molesta constantemente a su senpai para que salga con ella.",
+    rating: 7.1,
+    year: 2020,
+    episodes: 25,
+    keywords: ["comedia", "romance", "slice of life", "universidad", "uzaki", "senpai", "teasing", "ligero"]
+  },
+  {
+    title: "Komi Can't Communicate",
+    genres: ["Comedia", "Romance", "Escolar"],
+    description: "Una chica popular con ansiedad social busca hacer 100 amigos con ayuda de un compañero.",
+    rating: 7.9,
+    year: 2021,
+    episodes: 24,
+    keywords: ["comedia", "romance", "escolar", "ansiedad social", "wholesome", "amistad", "cute", "komi"]
+  },
+  {
+    title: "Horimiya",
+    genres: ["Romance", "Comedia", "Escolar"],
+    description: "Dos estudiantes con personalidades secretas desarrollan una relación especial.",
+    rating: 8.2,
+    year: 2021,
+    episodes: 13,
+    keywords: ["romance", "comedia", "escolar", "wholesome", "pareja", "identidad", "amigos", "juventud"]
+  },
+  {
+    title: "Fruits Basket (2019)",
+    genres: ["Romance", "Drama", "Sobrenatural"],
+    description: "Una chica sin hogar vive con una familia maldita que se transforma en animales del zodiaco.",
+    rating: 8.6,
+    year: 2019,
+    episodes: 63,
+    keywords: ["romance", "drama", "sobrenatural", "maldición", "zodiaco", "familia", "emocional", "shoujo", "trauma"]
+  },
+  {
+    title: "Anohana",
+    genres: ["Drama", "Slice of Life", "Sobrenatural"],
+    description: "Amigos de la infancia se reúnen cuando el fantasma de su amiga fallecida aparece.",
+    rating: 8.3,
+    year: 2011,
+    episodes: 11,
+    keywords: ["drama", "slice of life", "sobrenatural", "amistad", "muerte", "emocional", "lágrimas", "duelo", "superación"]
+  },
+  {
+    title: "Your Lie in April",
+    genres: ["Drama", "Romance", "Música"],
+    description: "Un pianista traumatizado encuentra inspiración en una violinista vibrante.",
+    rating: 8.6,
+    year: 2014,
+    episodes: 22,
+    keywords: ["drama", "romance", "música", "piano", "violín", "emocional", "lágrimas", "clásica", "trauma", "triste"]
+  },
+  {
+    title: "A Place Further Than The Universe",
+    genres: ["Aventura", "Drama", "Slice of Life"],
+    description: "Cuatro chicas emprenden un viaje a la Antártida.",
+    rating: 8.5,
+    year: 2018,
+    episodes: 13,
+    keywords: ["aventura", "drama", "slice of life", "viaje", "antártida", "amistad", "inspirador", "emocional", "juventud"]
+  },
+  {
+    title: "Odd Taxi",
+    genres: ["Misterio", "Thriller"],
+    description: "Un taxista valrús se involucra en una compleja trama de misterio urbano.",
+    rating: 8.7,
+    year: 2021,
+    episodes: 13,
+    keywords: ["misterio", "thriller", "animales", "taxi", "urbano", "complejo", "original", "adulto", "entretenido"]
+  },
+  {
+    title: "Link Click",
+    genres: ["Thriller", "Misterio", "Sobrenatural"],
+    description: "Dos amigos usan fotos para viajar al pasado y cumplir pedidos de clientes.",
+    rating: 8.6,
+    year: 2021,
+    episodes: 22,
+    keywords: ["thriller", "misterio", "sobrenatural", "viaje en el tiempo", "fotos", "donghua", "chino", "suspenso"]
+  },
+  {
+    title: "The Apothecary Diaries",
+    genres: ["Misterio", "Drama", "Histórico"],
+    description: "Una apotecaria resuelve misterios en el palacio imperial chino.",
+    rating: 8.8,
+    year: 2023,
+    episodes: 24,
+    keywords: ["misterio", "drama", "histórico", "china", "palacio", "veneno", "inteligente", "detective", "médico"]
+  },
+  {
+    title: "Ranking of Kings",
+    genres: ["Aventura", "Fantasía", "Drama"],
+    description: "Un príncipe sordo y débil busca convertirse en el rey más grande.",
+    rating: 8.6,
+    year: 2021,
+    episodes: 23,
+    keywords: ["aventura", "fantasía", "drama", "príncipe", "superación", "wholesome", "emocional", "inspirador", "único"]
+  },
+  {
+    title: "Skip and Loafer",
+    genres: ["Comedia", "Romance", "Slice of Life"],
+    description: "Una chica del campo se adapta a la vida en Tokyo mientras persigue sus sueños.",
+    rating: 8.3,
+    year: 2023,
+    episodes: 12,
+    keywords: ["comedia", "romance", "slice of life", "escuela", "tokyo", "wholesome", "rural", "crecimiento"]
+  },
+  {
+    title: "The Dangers in My Heart",
+    genres: ["Romance", "Comedia", "Escolar"],
+    description: "Un chico edgy con fantasías oscuras se enamora de la chica popular.",
+    rating: 8.3,
+    year: 2023,
+    episodes: 25,
+    keywords: ["romance", "comedia", "escolar", "wholesome", "cute", "tsundere", "desarrollo", "dulce"]
+  },
+  {
+    title: "Insomniacs After School",
+    genres: ["Romance", "Slice of Life"],
+    description: "Dos insomnes encuentran consuelo mutuo en el observatorio de la escuela.",
+    rating: 7.8,
+    year: 2023,
+    episodes: 13,
+    keywords: ["romance", "slice of life", "insomnio", "escuela", "tranquilo", "astronomía", "wholesome", "nocturno"]
+  },
+  {
+    title: "Mashle",
+    genres: ["Comedia", "Acción", "Fantasía"],
+    description: "Un chico sin magia usa solo fuerza física en un mundo mágico.",
+    rating: 7.7,
+    year: 2023,
+    episodes: 24,
+    keywords: ["comedia", "acción", "fantasía", "magia", "músculos", "parodia", "harry potter", "shonen", "divertido"]
+  },
+  {
+    title: "Oshi no Ko",
+    genres: ["Drama", "Misterio", "Sobrenatural"],
+    description: "Un doctor es reencarnado como hijo de su idol favorita y busca venganza.",
+    rating: 8.5,
+    year: 2023,
+    episodes: 24,
+    keywords: ["drama", "misterio", "sobrenatural", "idols", "reencarnación", "industria", "oscuro", "venganza", "entretenimiento"]
+  },
+  {
+    title: "Hell's Paradise",
+    genres: ["Acción", "Aventura", "Fantasía"],
+    description: "Criminales son enviados a una isla misteriosa en busca del elixir de la inmortalidad.",
+    rating: 8.0,
+    year: 2023,
+    episodes: 13,
+    keywords: ["acción", "aventura", "fantasía", "supervivencia", "isla", "ninjas", "gore", "misterio", "mappa"]
+  },
+  {
+    title: "Undead Unluck",
+    genres: ["Acción", "Comedia", "Sobrenatural"],
+    description: "Una chica con mala suerte y un inmortal buscan evitar el apocalipsis.",
+    rating: 7.6,
+    year: 2023,
+    episodes: 24,
+    keywords: ["acción", "comedia", "sobrenatural", "poderes", "apocalipsis", "negadores", "único", "romance"]
+  },
+  {
+    title: "86 Eighty-Six",
+    genres: ["Acción", "Drama", "Mecha", "Ciencia Ficción"],
+    description: "Soldados discriminados luchan en drones mientras su nación niega su existencia.",
+    rating: 8.2,
+    year: 2021,
+    episodes: 23,
+    keywords: ["acción", "drama", "mecha", "ciencia ficción", "guerra", "racismo", "militar", "emocional", "robots"]
+  },
+  {
+    title: "To Your Eternity",
+    genres: ["Aventura", "Drama", "Fantasía"],
+    description: "Un ser inmortal experimenta la vida humana a través de diferentes épocas.",
+    rating: 8.4,
+    year: 2021,
+    episodes: 40,
+    keywords: ["aventura", "drama", "fantasía", "inmortalidad", "emocional", "filosófico", "muerte", "vida", "evolución"]
+  },
+  {
+    title: "The Duke of Death and His Maid",
+    genres: ["Romance", "Comedia", "Sobrenatural"],
+    description: "Un duque maldito que mata con su toque y su devota criada.",
+    rating: 7.5,
+    year: 2021,
+    episodes: 36,
+    keywords: ["romance", "comedia", "sobrenatural", "maldición", "duque", "criada", "wholesome", "prohibido"]
+  },
+  {
+    title: "Call of the Night",
+    genres: ["Romance", "Sobrenatural", "Slice of Life"],
+    description: "Un insomne se encuentra con una vampira y explora la vida nocturna.",
+    rating: 7.8,
+    year: 2022,
+    episodes: 13,
+    keywords: ["romance", "sobrenatural", "slice of life", "vampiros", "noche", "insomnio", "urbano", "atmosférico"]
+  },
+  {
+    title: "Lycoris Recoil",
+    genres: ["Acción", "Slice of Life"],
+    description: "Dos agentes femeninas trabajan en un café mientras protegen la paz de Japón.",
+    rating: 8.0,
+    year: 2022,
+    episodes: 13,
+    keywords: ["acción", "slice of life", "café", "agentes", "guns", "yuri", "cute girls", "original"]
+  },
+  {
+    title: "Cyberpunk: Edgerunners",
+    genres: ["Acción", "Ciencia Ficción", "Drama"],
+    description: "Un joven busca sobrevivir en Night City como mercenario cibernético.",
+    rating: 8.3,
+    year: 2022,
+    episodes: 10,
+    keywords: ["acción", "ciencia ficción", "drama", "cyberpunk", "futuro", "implantes", "netflix", "trigger", "trágico"]
+  },
+  {
+    title: "The Eminence in Shadow",
+    genres: ["Comedia", "Acción", "Fantasía", "Isekai"],
+    description: "Un chico obsesionado con ser un villano en las sombras es transportado a otro mundo.",
+    rating: 7.9,
+    year: 2022,
+    episodes: 20,
+    keywords: ["comedia", "acción", "fantasía", "isekai", "op", "villano", "sombras", "parodia", "divertido"]
+  },
+  {
+    title: "My Dress-Up Darling",
+    genres: ["Romance", "Comedia", "Slice of Life"],
+    description: "Un chico tímido ayuda a una chica popular con sus cosplays.",
+    rating: 8.2,
+    year: 2022,
+    episodes: 12,
+    keywords: ["romance", "comedia", "slice of life", "cosplay", "wholesome", "escuela", "otaku", "cute"]
+  },
+  {
+    title: "Zom 100: Bucket List of the Dead",
+    genres: ["Comedia", "Horror", "Aventura"],
+    description: "Un oficinista ve el apocalipsis zombie como liberación y hace su lista de deseos.",
+    rating: 7.6,
+    year: 2023,
+    episodes: 12,
+    keywords: ["comedia", "horror", "aventura", "zombies", "bucket list", "positivo", "supervivencia", "moderno"]
+  },
+  {
+    title: "Pluto",
+    genres: ["Misterio", "Drama", "Ciencia Ficción"],
+    description: "Un detective robot investiga una serie de asesinatos de robots y humanos.",
+    rating: 8.8,
+    year: 2023,episodes: 8,
+    keywords: ["misterio", "drama", "ciencia ficción", "robots", "detective", "filosófico", "urasawa", "astro boy", "maduro"]
+  },
+  {
+    title: "Vinland Saga Season 2",
+    genres: ["Drama", "Histórico", "Aventura"],
+    description: "Thorfinn busca redención y un nuevo propósito después de años de venganza.",
+    rating: 9.0,
+    year: 2023,
+    episodes: 24,
+    keywords: ["drama", "histórico", "aventura", "vikingos", "redención", "pacifismo", "filosófico", "granja", "crecimiento"]
+  },
+  {
+    title: "Jojo's Bizarre Adventure",
+    genres: ["Acción", "Aventura", "Sobrenatural"],
+    description: "La familia Joestar enfrenta enemigos con poderes sobrenaturales a través de generaciones.",
+    rating: 8.5,
+    year: 2012,
+    episodes: 190,
+    keywords: ["acción", "aventura", "sobrenatural", "jojo", "stands", "largo", "único", "fabulous", "bizarre"]
+  },
+  {
+    title: "Mob Psycho 100 Season 2",
+    genres: ["Acción", "Comedia", "Sobrenatural"],
+    description: "Mob continúa su crecimiento personal mientras enfrenta amenazas psíquicas más grandes.",
+    rating: 8.8,
+    year: 2019,
+    episodes: 13,
+    keywords: ["acción", "comedia", "sobrenatural", "poderes", "psíquico", "crecimiento", "emocional", "espíritus", "one"]
+  },
+  {
+    title: "Tokyo Ghoul:re",
+    genres: ["Acción", "Horror", "Drama"],
+    description: "Kaneki con una nueva identidad enfrenta su pasado como investigador de ghouls.",
+    rating: 7.0,
+    year: 2018,
+    episodes: 24,
+    keywords: ["acción", "horror", "drama", "ghouls", "identidad", "ccg", "oscuro", "tragedia"]
+  },
+  {
+    title: "Parasyte Part 2",
+    genres: ["Acción", "Horror", "Ciencia Ficción"],
+    description: "Continuación de la lucha de Shinichi contra los parásitos.",
+    rating: 8.4,
+    year: 2015,
+    episodes: 12,
+    keywords: ["acción", "horror", "ciencia ficción", "parásitos", "humanidad", "filosófico", "gore"]
+  },
+  {
+    title: "Demon Slayer: Entertainment District",
+    genres: ["Acción", "Aventura", "Fantasía"],
+    description: "Tanjiro y sus amigos enfrentan demonios en el distrito de entretenimiento.",
+    rating: 8.9,
+    year: 2021,
+    episodes: 11,
+    keywords: ["acción", "aventura", "fantasía", "demonios", "espadas", "animación", "épico", "tengen"]
+  },
+  {
+    title: "Attack on Titan Final Season",
+    genres: ["Acción", "Drama", "Fantasía"],
+    description: "La verdad sobre el mundo se revela mientras la guerra alcanza su clímax.",
+    rating: 9.1,
+    year: 2020,
+    episodes: 28,
+    keywords: ["acción", "drama", "fantasía", "guerra", "final", "revelaciones", "épico", "marley"]
+  },
+  {
+    title: "Bleach: Thousand Year Blood War",
+    genres: ["Acción", "Aventura", "Sobrenatural"],
+    description: "Ichigo enfrenta la amenaza final de los Quincy.",
+    rating: 9.0,
+    year: 2022,
+    episodes: 26,
+    keywords: ["acción", "aventura", "sobrenatural", "shinigami", "quincy", "espadas", "regreso", "final"]
+  }
+];
+
+// Sistema de sinónimos para búsquedas más inteligentes
+const synonyms = {
+  "amor": ["romance", "amor", "pareja", "enamorado", "romántico"],
+  "romance": ["romance", "amor", "pareja", "enamorado", "romántico"],
+  "pelea": ["acción", "pelea", "peleas", "batalla", "combate", "lucha"],
+  "peleas": ["acción", "pelea", "peleas", "batalla", "combate", "lucha"],
+  "batalla": ["acción", "pelea", "peleas", "batalla", "combate", "lucha"],
+  "acción": ["acción", "pelea", "peleas", "batalla", "combate", "lucha"],
+  "comedia": ["comedia", "divertido", "cómico", "gracioso", "humor"],
+  "divertido": ["comedia", "divertido", "cómico", "gracioso", "humor"],
+  "triste": ["drama", "triste", "emocional", "lágrimas", "emotivo"],
+  "drama": ["drama", "triste", "emocional", "lágrimas", "emotivo"],
+  "miedo": ["horror", "miedo", "terror", "oscuro", "gore"],
+  "terror": ["horror", "miedo", "terror", "oscuro", "gore"],
+  "magia": ["magia", "fantasía", "mágico", "hechicería"],
+  "fantasía": ["magia", "fantasía", "mágico", "hechicería"],
+  "escuela": ["escuela", "escolar", "estudiante", "academia"],
+  "estudiante": ["escuela", "escolar", "estudiante", "academia"],
+  "poderes": ["poderes", "superpoderes", "habilidades", "quirks"],
+  "superpoderes": ["poderes", "superpoderes", "habilidades", "quirks"],
+  "largo": ["largo", "muchos episodios", "muchos", "extenso"],
+  "corto": ["corto", "película", "pocos episodios", "breve"],
+  "película": ["película", "corto", "film"],
+  "ninja": ["ninja", "shinobi", "naruto"],
+  "samurai": ["samurai", "espadas", "katana"],
+  "robot": ["mecha", "robot", "robots"],
+  "mecha": ["mecha", "robot", "robots"],
+  "espacio": ["espacio", "espacial", "sci-fi", "ciencia ficción"],
+  "futuro": ["futuro", "sci-fi", "ciencia ficción", "futurista"],
+  "viaje tiempo": ["viaje en el tiempo", "tiempo", "temporal"],
+  "tiempo": ["viaje en el tiempo", "tiempo", "temporal"]
+};
+
+const searchForm = document.getElementById("searchForm");
+const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
+const animeGrid = document.getElementById("animeGrid");
+const matchInfo = document.getElementById("matchInfo");
+const resultsSection = document.getElementById("results");
+
+function fillExample(text) {
+  searchInput.value = text;
+  searchInput.focus();
+}
+
+function searchAnime(query) {
+  query = query.toLowerCase().trim();
+  if (!query) return [];
+
+  const queryWords = query.split(" ").filter(w => w.length > 2);
+
+  const expandedWords = new Set();
+  queryWords.forEach(word => {
+    expandedWords.add(word);
+    if (synonyms[word]) {
+      synonyms[word].forEach(syn => expandedWords.add(syn));
+    }
+  });
+
+  return animeDatabase
+    .map(anime => {
+      const allText = (
+        anime.keywords.join(" ") + " " + 
+        anime.title + " " + 
+        anime.description + " " +
+        anime.genres.join(" ")
+      ).toLowerCase();
+      
+      let score = 0;
+      expandedWords.forEach(word => {
+        if (allText.includes(word)) {
+          score++;
+        }
+      });
+      
+      return { ...anime, matchScore: score };
+    })
+    .filter(anime => anime.matchScore > 0)
+    .sort((a, b) => b.matchScore - a.matchScore)
+    .slice(0, 10);
+}
+
+function displayResults(results) {
+  animeGrid.innerHTML = "";
+  
+  if (results.length === 0) {
+    matchInfo.textContent = "No se encontraron animes. Intenta: acción, romance, comedia, magia, etc.";
+    resultsSection.classList.add("show");
+    return;
+  }
+
+  matchInfo.textContent = `Se encontraron ${results.length} animes:`;
+
+  results.forEach(anime => {
+    const card = document.createElement("div");
+    card.classList.add("anime-card");
+    const genresHTML = anime.genres.map(g => `<span class="genre-tag">${g}</span>`).join("");
+
+    card.innerHTML = `
+      <div class="match-score">Match: ${anime.matchScore}</div>
+      <h3 class="anime-title">${anime.title}</h3>
+      <div class="anime-genres">${genresHTML}</div>
+      <p class="anime-description">${anime.description}</p>
+      <div class="anime-meta">
+        <span>Año: ${anime.year}</span>
+        <span>Episodios: ${anime.episodes}</span>
+        <div class="rating">${"★".repeat(Math.round(anime.rating))}</div>
+      </div>
+    `;
+    animeGrid.appendChild(card);
+  });
+
+  resultsSection.classList.add("show");
+  resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+searchForm.addEventListener("submit", e => {
+  e.preventDefault();
+  searchBtn.classList.add("loading");
+
+  setTimeout(() => {
+    const query = searchInput.value;
+    const results = searchAnime(query);
+    displayResults(results);
+    searchBtn.classList.remove("loading");
+  }, 300);
+});
+</script>
