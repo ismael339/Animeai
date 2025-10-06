@@ -1,5 +1,13 @@
+<<<<<<< HEAD
 node_modules/
 .env
 .vercel
 dist/
 build/
+=======
+node_modules/
+.env
+.vercel
+dist/
+build/
+>>>>>>> 09080b61c6c1e32de7e8ab4d51a41d7235b0a899
