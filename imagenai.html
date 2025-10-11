@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO OPTIMIZADO -->
+  <title>AnimeAI - Free AI Anime Image Generator | Create Anime Art Instantly</title>
+  <meta name="description" content="Generate stunning anime images FREE with AI. Describe characters, scenes & styles in any language. No signup required. Create anime art in seconds!">
+  <meta name="keywords" content="anime AI generator, free anime creator, AI anime art, generate anime images, anime character creator, AI art generator, anime maker online, free anime generator">
+  <link rel="canonical" href="https://animeai-psi.vercel.app/imagenai.html">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="AnimeAI - Free AI Anime Image Generator">
+  <meta property="og:description" content="Create stunning anime art with AI. Describe in any language and get instant results!">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://animeai-psi.vercel.app/imagenai.html">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* ========================
+       GLOBAL STYLES
+    ======================== */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --text-primary: #ffffff;
+        --text-secondary: #b8c6db;
+        --glass: rgba(255, 255, 255, 0.1);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #0a0e27;
+        color: var(--text-primary);
+        line-height: 1.6;
+        overflow-x: hidden;
+    }
+
+    .bg-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background: linear-gradient(45deg, #0a0e27, #16213e, #0f0f23, #1a1a2e);
+        background-size: 400% 400%;
+        animation: gradientShift 20s ease infinite;
+    }
+
+    .bg-animation::before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(245, 87, 108, 0.1) 0%, transparent 50%);
+    }
+
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    /* HEADER */
+    .header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding: 1rem 2rem;
+        background: rgba(10, 14, 39, 0.95);
+        backdrop-filter: blur(15px);
+        border-bottom: 1px solid var(--glass-border);
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .logo {
+        font-family: 'Poppins', sans-serif;
+        font-size: 2rem;
+        font-weight: 900;
+        background: var(--primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-decoration: none;
+    }
+
+    .nav-buttons {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .nav-btn {
+        padding: 0.6rem 1.2rem;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid var(--glass-border);
+        border-radius: 10px;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .nav-btn:hover {
+        background: rgba(102, 126, 234, 0.2);
+        color: var(--text-primary);
+        transform: translateY(-2px);
+    }
+
+    .nav-btn-ia {
+        background: var(--accent);
+        color: white;
+        font-weight: 700;
+        box-shadow: 0 8px 25px rgba(0, 242, 254, 0.3);
+        border: none;
+    }
+
+    .nav-btn-ia:hover {
+        background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 12px 30px rgba(0, 242, 254, 0.5);
+    }
+
+    /* MAIN CONTENT */
+    .main {
+        padding-top: 120px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-bottom: 4rem;
+    }
+
+    .hero {
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .hero-badge {
+        display: inline-block;
+        padding: 0.5rem 1.5rem;
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        border-radius: 50px;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .hero-badge span {
+        background: var(--accent);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+    }
+
+    .hero h1 {
+        font-family: 'Poppins', sans-serif;
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 900;
+        background: var(--primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    .hero p {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        line-height: 1.8;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    /* SEARCH SECTION */
+    .search-section {
+        max-width: 900px;
+        margin: 2rem auto 4rem;
+        padding: 0 2rem;
+    }
+
+    .search-container {
+        background: var(--glass);
+        backdrop-filter: blur(15px);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 2.5rem;
+        box-shadow: var(--shadow);
+    }
+
+    .search-label {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 1.5rem;
+        background: rgba(255,255,255,0.08);
+        border: 2px solid var(--glass-border);
+        border-radius: 16px;
+        font-size: 1rem;
+        color: var(--text-primary);
+        font-family: inherit;
+        resize: vertical;
+        min-height: 130px;
+        transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 25px rgba(102,126,234,0.4);
+        background: rgba(255,255,255,0.12);
+    }
+
+    .search-input::placeholder {
+        color: var(--text-secondary);
+        opacity: 0.7;
+    }
+
+    /* EXAMPLES */
+    .examples {
+        margin-top: 1.5rem;
+    }
+
+    .examples h3 {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .example-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.7rem;
+        justify-content: center;
+    }
+
+    .example-tag {
+        padding: 0.5rem 1rem;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid var(--glass-border);
+        border-radius: 50px;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .example-tag:hover {
+        background: rgba(102,126,234,0.25);
+        color: var(--text-primary);
+        transform: translateY(-2px);
+    }
+
+    /* GENERATE BUTTON */
+    .generate-btn {
+        margin-top: 1.5rem;
+        width: 100%;
+        padding: 1.2rem 2rem;
+        background: var(--primary);
+        color: white;
+        font-weight: 700;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 25px rgba(102,126,234,0.3);
+        position: relative;
+    }
+
+    .generate-btn:hover:not(:disabled) {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(102,126,234,0.5);
+    }
+
+    .generate-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .generate-btn.loading {
+        pointer-events: none;
+    }
+
+    .generate-btn.loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: 2rem;
+        width: 20px;
+        height: 20px;
+        margin-top: -10px;
+        border: 3px solid transparent;
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* RESULT CONTAINER */
+    #resultContainer {
+        margin-top: 2rem;
+    }
+
+    .generated-image-container {
+        text-align: center;
+        animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .generated-image {
+        max-width: 100%;
+        width: 100%;
+        height: auto;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        margin-bottom: 1rem;
+    }
+
+    .download-btn {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.8rem 2rem;
+        background: var(--success);
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .download-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(17,153,142,0.4);
+    }
+
+    .loading-message {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+    }
+
+    .error-message {
+        text-align: center;
+        padding: 2rem;
+        color: #ff6b6b;
+        font-size: 1rem;
+    }
+
+    /* SEO SECTION */
+    .seo-section {
+        padding: 3rem 2rem;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .seo-section h2 {
+        font-size: 1.8rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        background: var(--primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .seo-section p, .seo-section li {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        line-height: 1.8;
+        margin-top: 0.5rem;
+    }
+
+    ul {
+        padding-left: 2rem;
+    }
+
+    ul li {
+        margin-bottom: 0.8rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+        .nav-buttons {
+            gap: 0.5rem;
+        }
+        .logo {
+            font-size: 1.5rem;
+        }
+        .search-container {
+            padding: 2rem;
+        }
+        .hero h1 {
+            font-size: 2rem;
+        }
+    }
+  </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <!-- HEADER -->
+    <header class="header" role="banner">
+        <nav class="nav" role="navigation">
+            <a href="index.html" class="logo">🎌 AnimeAI</a>
+            <div class="nav-buttons">
+                <a href="index.html" class="nav-btn">🔍 Search Anime</a>
+                <a href="imagenai.html" class="nav-btn nav-btn-ia">✨ AI Images</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <!-- HERO SECTION -->
+        <section class="hero" role="main">
+            <div class="hero-badge">
+                🤖 <span>100% Free</span> AI-Powered
+            </div>
+            <h1>AI Anime Image Generator</h1>
+            <p>Create stunning, unique anime images instantly with artificial intelligence. Describe your character, scene, or style in <strong>any language</strong> and watch AI bring your imagination to life!</p>
+        </section>
+
+        <!-- GENERATOR SECTION -->
+        <section class="search-section" aria-label="Anime Image Generator">
+            <div class="search-container">
+                <label class="search-label" for="promptInput">
+                    🎨 Describe the anime image you want to create:
+                </label>
+                <textarea 
+                    id="promptInput" 
+                    class="search-input" 
+                    placeholder="Examples:
+- 'Anime girl with long blue hair, magical sword, fantasy outfit, starry night background'
+- 'Overpowered shounen protagonist with fire powers, epic battle pose, dramatic lighting'
+- 'Cute chibi cat girl with pink hair, kawaii style, pastel colors'
+- 'Dark fantasy anime warrior with armor, dragon in background, epic scene'
+
+Write in English, Spanish, or any language!" 
+                    rows="6" 
+                    aria-required="true"></textarea>
+
+                <!-- EXAMPLES -->
+                <div class="examples">
+                    <h3>🔥 Popular Styles (Click to Use)</h3>
+                    <div class="example-tags">
+                        <span class="example-tag" data-prompt="beautiful anime girl with long silver hair, blue eyes, magical staff, fantasy dress, ethereal background, high quality anime art">✨ Fantasy Girl</span>
+                        <span class="example-tag" data-prompt="overpowered shounen protagonist, spiky black hair, fire powers, battle stance, dramatic lighting, epic anime style">⚔️ Shounen Hero</span>
+                        <span class="example-tag" data-prompt="cute chibi anime character, pastel pink hair, cat ears, kawaii style, hearts background, adorable expression">🐱 Kawaii Chibi</span>
+                        <span class="example-tag" data-prompt="dark fantasy anime warrior, black armor, red eyes, sword, dragon silhouette, epic battle scene, detailed anime art">🐉 Dark Warrior</span>
+                        <span class="example-tag" data-prompt="anime mecha robot, futuristic design, neon lights, space background, gundam style, detailed mechanical parts">🤖 Mecha</span>
+                        <span class="example-tag" data-prompt="romantic anime couple, cherry blossom background, soft lighting, shoujo manga style, emotional scene">💕 Romance</span>
+                        <span class="example-tag" data-prompt="cyberpunk anime character, neon city background, futuristic outfit, tech accessories, purple and blue lighting">🌃 Cyberpunk</span>
+                        <span class="example-tag" data-prompt="anime samurai with katana, traditional japanese outfit, sakura petals falling, historical setting, dramatic pose">⚔️ Samurai</span>
+                    </div>
+                </div>
+
+                <button id="generateBtn" class="generate-btn" aria-label="Generate anime image">
+                    🚀 Generate Image with AI
+                </button>
+
+                <div id="resultContainer" aria-live="polite"></div>
+            </div>
+        </section>
+
+        <!-- SEO CONTENT SECTION -->
+        <section class="seo-section">
+            <h2>How Does the AI Anime Generator Work?</h2>
+            <p>Our AI anime image generator uses advanced artificial intelligence models trained specifically on anime art styles. Simply describe what you want in natural language, and the AI will create a unique image matching your description in seconds.</p>
+            
+            <h2>Why Choose AnimeAI Image Generator?</h2>
+            <ul>
+                <li><strong>100% Free:</strong> No registration, no credits, no hidden costs. Generate unlimited anime images.</li>
+                <li><strong>Instant Results:</strong> Get your custom anime art in just 5-10 seconds.</li>
+                <li><strong>Any Language:</strong> Describe in English, Spanish, Japanese, or any language you prefer.</li>
+                <li><strong>High Quality:</strong> Professional-grade anime artwork powered by state-of-the-art AI.</li>
+                <li><strong>Multiple Styles:</strong> From shounen action to kawaii chibi, fantasy to cyberpunk.</li>
+                <li><strong>No Skills Needed:</strong> You don't need to be an artist - just describe and create!</li>
+                <li><strong>Download Freely:</strong> Save and use your generated images however you want.</li>
+            </ul>
+
+            <h2>Popular Anime Styles You Can Generate</h2>
+            <ul>
+                <li><strong>Shounen:</strong> Action-packed characters with dynamic poses and epic backgrounds</li>
+                <li><strong>Shoujo:</strong> Romantic scenes with soft colors and beautiful character designs</li>
+                <li><strong>Isekai:</strong> Fantasy worlds with magical elements and otherworldly settings</li>
+                <li><strong>Mecha:</strong> Giant robots and futuristic mechanical designs</li>
+                <li><strong>Slice of Life:</strong> Everyday characters in realistic, heartwarming scenes</li>
+                <li><strong>Dark Fantasy:</strong> Gothic atmosphere with dramatic lighting and mysterious characters</li>
+                <li><strong>Kawaii/Chibi:</strong> Super cute, small characters with exaggerated features</li>
+                <li><strong>Cyberpunk:</strong> Futuristic cities with neon lights and tech aesthetics</li>
+            </ul>
+
+            <h2>Tips for Better AI Anime Images</h2>
+            <ul>
+                <li>Be specific about hair color, eye color, and clothing details</li>
+                <li>Mention the art style you want (e.g., "shounen style", "kawaii", "detailed anime art")</li>
+                <li>Describe the background or setting clearly</li>
+                <li>Add mood descriptors like "dramatic", "cute", "epic", "romantic"</li>
+                <li>Mention lighting effects for more atmospheric results</li>
+                <li>Combine multiple elements: character + style + background + mood</li>
+            </ul>
+
+            <h2>Is AI-Generated Anime Art Legal?</h2>
+            <p>Yes! All images generated by our AI are created from scratch based on your description. They are unique creations that you can use freely for personal projects, social media, wallpapers, and more.</p>
+        </section>
+    </main>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // ====================================
+        // DOM ELEMENTS
+        // ====================================
+        const generateBtn = document.getElementById("generateBtn");
+        const promptInput = document.getElementById("promptInput");
+        const resultContainer = document.getElementById("resultContainer");
+
+        // ====================================
+        // EXAMPLE TAGS CLICK
+        // ====================================
+        document.querySelectorAll('.example-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                promptInput.value = this.getAttribute('data-prompt');
+                promptInput.focus();
+                promptInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        });
+
+        // ====================================
+        // GENERATE IMAGE FUNCTION
+        // ====================================
+        generateBtn.addEventListener("click", async () => {
+            const prompt = promptInput.value.trim();
+            
+            // Validar que hay un prompt
+            if (!prompt) {
+                alert("⚠️ Please write a description to generate the image!");
+                promptInput.focus();
+                return;
+            }
+
+            // Deshabilitar botón y mostrar loading
+            generateBtn.disabled = true;
+            generateBtn.classList.add('loading');
+            generateBtn.innerHTML = '🎨 Generating your anime art...';
+
+            resultContainer.innerHTML = `
+                <div class="loading-message">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">✨</div>
+                    <p><strong>Creating your anime image...</strong></p>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.8;">This may take 5-15 seconds depending on complexity</p>
+                </div>
+            `;
+
+            try {
+                // ====================================
+                // USANDO POLLINATIONS.AI (100% GRATIS)
+                // ====================================
+                
+                // Mejorar el prompt para obtener mejor calidad anime
+                const enhancedPrompt = `${prompt}, anime art style, high quality, detailed, professional anime illustration`;
+                
+                // Encode el prompt para URL
+                const encodedPrompt = encodeURIComponent(enhancedPrompt);
+                
+                // URL de Pollinations.AI (genera la imagen directamente)
+                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true&model=flux`;
+                
+                // Añadir timestamp para evitar cache
+                const timestamp = new Date().getTime();
+                const finalUrl = `${imageUrl}&seed=${timestamp}`;
+
+                // Precargar la imagen para verificar que se generó correctamente
+                const img = new Image();
+                
+                img.onload = () => {
+                    // Imagen cargada exitosamente
+                    resultContainer.innerHTML = `
+                        <div class="generated-image-container">
+                            <img src="${finalUrl}" alt="AI Generated Anime: ${prompt}" class="generated-image" loading="lazy">
+                            <div style="margin-top: 1rem;">
+                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">
+                                    <strong>Your anime image is ready!</strong> 🎉
+                                </p>
+                                <a href="${finalUrl}" download="animeai-${timestamp}.png" class="download-btn">
+                                    💾 Download Image
+                                </a>
+                                <button onclick="document.getElementById('generateBtn').click()" style="margin-left: 0.5rem; padding: 0.8rem 2rem; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">
+                                    🔄 Generate Another
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Scroll suave al resultado
+                    resultContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // Reactivar botón
+                    generateBtn.disabled = false;
+                    generateBtn.classList.remove('loading');
+                    generateBtn.innerHTML = '🚀 Generate Image with AI';
+                };
+
+                img.onerror = () => {
+                    throw new Error('Image generation failed');
+                };
+
+                // Iniciar la carga de la imagen
+                img.src = finalUrl;
+
+            } catch (error) {
+                console.error('Error generating image:', error);
+                
+                resultContainer.innerHTML = `
+                    <div class="error-message">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+                        <p><strong>Oops! Something went wrong</strong></p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">
+                            The AI service might be temporarily busy. Please try again in a moment.
+                        </p>
+                        <button onclick="document.getElementById('generateBtn').click()" style="margin-top: 1rem; padding: 0.8rem 2rem; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">
+                            🔄 Try Again
+                        </button>
+                    </div>
+                `;
+                
+                // Reactivar botón
+                generateBtn.disabled = false;
+                generateBtn.classList.remove('loading');
+                generateBtn.innerHTML = '🚀 Generate Image with AI';
+            }
+        });
+
+        // ====================================
+        // PERMITIR GENERAR CON ENTER (Ctrl+Enter)
+        // ====================================
+        promptInput.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                generateBtn.click();
+            }
+        });
+
+        // ====================================
+        // CONSOLE LOG
+        // ====================================
+        console.log('%c🎨 AnimeAI Image Generator', 'color: #667eea; font-size: 20px; font-weight: bold;');
+        console.log('%c✨ Powered by Pollinations.AI', 'color: #4facfe; font-size: 14px;');
+        console.log('💡 Tip: Press Ctrl+Enter to generate!');
+    </script>
+</body>
+</html>
